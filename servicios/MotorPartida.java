@@ -293,10 +293,16 @@ public class MotorPartida {
             if (decisionM1.isRealizarSuposicion()) {
                 System.out.println("  Suposición: " + decisionM1.getPersonajeObjetivo().getNombre());
                 if (partida.intentarSuposicion(maquina1, humano, decisionM1.getPersonajeObjetivo())) {
-                    System.out.println("  ¡Máquina 1 adivinó tu personaje! Perdiste.");
+                    System.out.println("  ✗ ¡Máquina 1 adivinó correctamente!");
+                    System.out.println("  → Tu personaje era: " + partida.getSecreto(humano).getNombre());
+                    System.out.println("  Perdiste.");
                     return false;
                 }
-                System.out.println("  Suposición incorrecta.");
+                System.out.println("  ✗ Suposición incorrecta.");
+                List<Personaje> restantesM1 = partida.obtenerCandidatos(maquina1, humano);
+                if (restantesM1.size() == 1) {
+                    System.out.println("  → Tu personaje secreto es: " + restantesM1.get(0).getNombre());
+                }
             } else {
                 System.out.println("  Pregunta: " + decisionM1.getPregunta());
                 Respuesta r = partida.responderPregunta(maquina1, humano, decisionM1.getPregunta());
@@ -323,10 +329,16 @@ public class MotorPartida {
             if (decisionM2.isRealizarSuposicion()) {
                 System.out.println("  Suposición: " + decisionM2.getPersonajeObjetivo().getNombre());
                 if (partida.intentarSuposicion(maquina2, humano, decisionM2.getPersonajeObjetivo())) {
-                    System.out.println("  ¡Máquina 2 adivinó tu personaje! Perdiste.");
+                    System.out.println("  ✗ ¡Máquina 2 adivinó correctamente!");
+                    System.out.println("  → Tu personaje era: " + partida.getSecreto(humano).getNombre());
+                    System.out.println("  Perdiste.");
                     return false;
                 }
-                System.out.println("  Suposición incorrecta.");
+                System.out.println("  ✗ Suposición incorrecta.");
+                List<Personaje> restantesM2 = partida.obtenerCandidatos(maquina2, humano);
+                if (restantesM2.size() == 1) {
+                    System.out.println("  → Tu personaje secreto es: " + restantesM2.get(0).getNombre());
+                }
             } else {
                 System.out.println("  Pregunta: " + decisionM2.getPregunta());
                 Respuesta r = partida.responderPregunta(maquina2, humano, decisionM2.getPregunta());
