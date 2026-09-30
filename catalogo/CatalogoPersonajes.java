@@ -42,7 +42,7 @@ public class CatalogoPersonajes {
         base.add(new Personaje(0, "Veronica", Genero.FEMENINO, true, false, ColorPelo.COLORADO));
         base.add(new Personaje(0, "Melina", Genero.FEMENINO, false, false, ColorPelo.COLORADO));
         base.add(new Personaje(0, "Noelia", Genero.FEMENINO, true, false, ColorPelo.AMARILLO));
-        base.add(new Personaje(0, "Valeria", Genero.FEMENINO, false, true, ColorPelo.NEGRO));
+        base.add(new Personaje(0, "Valeria", Genero.FEMENINO, false, false, ColorPelo.NEGRO));
 
         // Ordenamiento con MergeSort propio (O(n log n) - estable y predecible)
         AlgoritmoOrdenamiento.mergeSort(base, Comparator.comparing(Personaje::getGenero));
