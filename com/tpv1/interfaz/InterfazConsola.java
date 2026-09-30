@@ -80,13 +80,40 @@ public class InterfazConsola {
         }
         String nombre = scanner.nextLine();
         
-        // Mostrar sub-menú de modos de juego
-        System.out.println("\n╔════════════════════════════════════════╗");
-        System.out.println("  SELECCIONA EL MODO DE JUEGO");
-        System.out.println("╚════════════════════════════════════════╝");
-        System.out.println("1. Humano vs Duo (adivina 1 de 2)");
-        System.out.println("2. Cualquier Rival (adivina 2 de 2)");
-        int modoOpcion = leerEntero("Opción");
+        // Mostrar sub-menú de modos de juego con explicaciones detalladas
+        System.out.println("\n╔════════════════════════════════════════════════════════════════╗");
+        System.out.println("║         ELIGE TU MODO DE JUEGO: HUMANO VS 2 MÁQUINAS          ║");
+        System.out.println("╚════════════════════════════════════════════════════════════════╝");
+        
+        System.out.println("\n┌─ MODO 1: HUMANO vs DUO (Clásico) ─────────────────────────────┐");
+        System.out.println("│ 🎯 OBJETIVO: Adivina el personaje de UNA sola máquina          │");
+        System.out.println("│                                                               │");
+        System.out.println("│ ✅ GANAS si:                                                  │");
+        System.out.println("│    • Adivinas el personaje de la Máquina 1 O                  │");
+        System.out.println("│    • Adivinas el personaje de la Máquina 2                    │");
+        System.out.println("│                                                               │");
+        System.out.println("│ ❌ PIERDES si:                                                │");
+        System.out.println("│    • Cualquiera de las máquinas adivina tu personaje          │");
+        System.out.println("│                                                               │");
+        System.out.println("│ 💡 ESTRATEGIA: Sé rápido, no necesitas eliminar a ambas      │");
+        System.out.println("└───────────────────────────────────────────────────────────────┘");
+        
+        System.out.println("\n┌─ MODO 2: CUALQUIER RIVAL (Hardcore) ──────────────────────────┐");
+        System.out.println("│ 🎯 OBJETIVO: Adivina los personajes de AMBAS máquinas         │");
+        System.out.println("│                                                               │");
+        System.out.println("│ ✅ GANAS si:                                                  │");
+        System.out.println("│    • Adivinas CORRECTAMENTE los personajes de M1 Y M2         │");
+        System.out.println("│    • Antes de que cualquiera de ellas te adivine              │");
+        System.out.println("│                                                               │");
+        System.out.println("│ ❌ PIERDES si:                                                │");
+        System.out.println("│    • Cualquiera de las máquinas adivina tu personaje          │");
+        System.out.println("│    • Aún si te quedan máquinas por adivinar                   │");
+        System.out.println("│                                                               │");
+        System.out.println("│ 💡 ESTRATEGIA: Debes ser preciso. Las máquinas ya adivinadas │");
+        System.out.println("│    dejan de hacer preguntas y no te amenazan más              │");
+        System.out.println("└───────────────────────────────────────────────────────────────┘");
+        
+        int modoOpcion = leerEntero("\n¿Qué modo prefieres? Opción");
         
         String modo = (modoOpcion == 2) ? "CUALQUIER_RIVAL" : "HUMANO_VS_DUO";
         

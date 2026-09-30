@@ -189,11 +189,26 @@ public class MotorPartida {
 
         Partida partida = crearPartidaHumanoVsMaquinas(humano, maquina1, maquina2);
 
-        System.out.println("\nTu personaje: " + secretoHumano.getNombre());
-        System.out.println("Las máquinas han elegido sus secretos en silencio.");
-        System.out.println("─────────────────────────────────────────");
-        System.out.println("MODO: " + (modo.equals("HUMANO_VS_DUO") ? "Humano vs Duo (adivina 1 de 2)" : "Cualquier Rival (adivina 2 de 2)"));
-        System.out.println("─────────────────────────────────────────");
+        System.out.println("\n╔═══════════════════════════════════════════════════════════╗");
+        System.out.println("║                  LA PARTIDA HA COMENZADO                  ║");
+        System.out.println("╚═══════════════════════════════════════════════════════════╝");
+        System.out.println("\n✓ Tu personaje secreto: " + secretoHumano.getNombre());
+        System.out.println("✓ Las máquinas han elegido sus secretos en silencio.");
+        System.out.println("\n─────────────────────────────────────────────────────────────");
+        
+        if (modo.equals("HUMANO_VS_DUO")) {
+            System.out.println("\n📋 MODO: HUMANO vs DUO");
+            System.out.println("   Necesitas adivinar a UNA máquina antes de que te atrapen.");
+            System.out.println("   Máquina 1 usa Divide y Conquista [D&C]");
+            System.out.println("   Máquina 2 usa Greedy [Greedy]");
+        } else {
+            System.out.println("\n📋 MODO: CUALQUIER RIVAL");
+            System.out.println("   Necesitas adivinar a AMBAS máquinas antes de que te atrapen.");
+            System.out.println("   Una vez que adivinas una, deja de atacarte (↔️ Ventaja tuya!)");
+            System.out.println("   Máquina 1 usa Divide y Conquista [D&C]");
+            System.out.println("   Máquina 2 usa Greedy [Greedy]");
+        }
+        System.out.println("\n─────────────────────────────────────────────────────────────");
 
         boolean m1Adivinada = false;
         boolean m2Adivinada = false;
