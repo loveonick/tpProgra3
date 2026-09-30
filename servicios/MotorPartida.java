@@ -172,7 +172,7 @@ public class MotorPartida {
         return partida;
     }
 
-    public boolean jugarHumanoVsMaquinas(Scanner scanner, String nombreUsuario) {
+    public boolean jugarHumanoVsMaquinas(Scanner scanner, String nombreUsuario, String modo) {
         CatalogoPersonajes catalogo = new CatalogoPersonajes();
         List<Personaje> personajes = catalogo.getPersonajes();
 
@@ -192,6 +192,11 @@ public class MotorPartida {
         System.out.println("\nTu personaje: " + secretoHumano.getNombre());
         System.out.println("Las máquinas han elegido sus secretos en silencio.");
         System.out.println("─────────────────────────────────────────");
+        System.out.println("MODO: " + (modo.equals("HUMANO_VS_DUO") ? "Humano vs Duo (adivina 1 de 2)" : "Cualquier Rival (adivina 2 de 2)"));
+        System.out.println("─────────────────────────────────────────");
+
+        boolean m1Adivinada = false;
+        boolean m2Adivinada = false;
 
         while (!partida.estaTerminada()) {
             boolean turnoHumanoTerminado = false;
@@ -204,6 +209,9 @@ public class MotorPartida {
                 System.out.println("  TURNO HUMANO");
                 System.out.println("  Opciones restantes en M1: " + candsM1.size());
                 System.out.println("  Opciones restantes en M2: " + candsM2.size());
+                if (modo.equals("CUALQUIER_RIVAL")) {
+                    System.out.println("  Adivinadas: " + (m1Adivinada ? "✓M1" : "") + " " + (m2Adivinada ? "✓M2" : ""));
+                }
                 System.out.println("╚══════════════════════════════╝");
 
                 System.out.println("1. Preguntar a AMBAS máquinas (A la vez)");
@@ -229,8 +237,20 @@ public class MotorPartida {
                         int idAdivina = leerEntero(scanner, "\nID que suponés para M1");
                         Personaje supuesto = catalogo.buscarPorId(idAdivina);
                         if (partida.intentarSuposicion(humano, maquina1, supuesto)) {
-                            System.out.println("¡Adivinaste el personaje de Máquina 1! Ganaste.");
-                            return true;
+                            System.out.println("¡Adivinaste el personaje de Máquina 1!");
+                            m1Adivinada = true;
+                            if (modo.equals("HUMANO_VS_DUO")) {
+                                System.out.println("Ganaste.");
+                                return true;
+                            } else {
+                                System.out.println("Máquinas adivinadas: 1/2");
+                                if (m2Adivinada) {
+                                    System.out.println("¡Adivinaste a ambas máquinas! Ganaste.");
+                                    return true;
+                                }
+                                turnoHumanoTerminado = true;
+                                break;
+                            }
                         }
                         System.out.println("Incorrecto. " + supuesto.getNombre() + " queda descartado para M1.");
                         List<Personaje> restantesM1 = partida.obtenerCandidatos(humano, maquina1);
@@ -244,8 +264,20 @@ public class MotorPartida {
                         int idAdivina = leerEntero(scanner, "\nID que suponés para M2");
                         Personaje supuesto = catalogo.buscarPorId(idAdivina);
                         if (partida.intentarSuposicion(humano, maquina2, supuesto)) {
-                            System.out.println("¡Adivinaste el personaje de Máquina 2! Ganaste.");
-                            return true;
+                            System.out.println("¡Adivinaste el personaje de Máquina 2!");
+                            m2Adivinada = true;
+                            if (modo.equals("HUMANO_VS_DUO")) {
+                                System.out.println("Ganaste.");
+                                return true;
+                            } else {
+                                System.out.println("Máquinas adivinadas: 1/2");
+                                if (m1Adivinada) {
+                                    System.out.println("¡Adivinaste a ambas máquinas! Ganaste.");
+                                    return true;
+                                }
+                                turnoHumanoTerminado = true;
+                                break;
+                            }
                         }
                         System.out.println("Incorrecto. " + supuesto.getNombre() + " queda descartado para M2.");
                         List<Personaje> restantesM2 = partida.obtenerCandidatos(humano, maquina2);
@@ -277,75 +309,79 @@ public class MotorPartida {
 
             if (partida.estaTerminada()) break;
 
-            List<Partida.RegistroPublico> histHumanoM1 = new ArrayList<>();
-            for (Partida.RegistroPublico reg : partida.getHistorialPublico()) {
-                if (reg.getEmisor().equals(maquina1.getNombre()) && reg.getReceptor().equals(humano.getNombre())) {
-                    histHumanoM1.add(reg);
+            if (!m1Adivinada) {
+                List<Partida.RegistroPublico> histHumanoM1 = new ArrayList<>();
+                for (Partida.RegistroPublico reg : partida.getHistorialPublico()) {
+                    if (reg.getEmisor().equals(maquina1.getNombre()) && reg.getReceptor().equals(humano.getNombre())) {
+                        histHumanoM1.add(reg);
+                    }
                 }
-            }
 
-            System.out.println("\n┌── TURNO MÁQUINA 1 [D&C] ──────────────────────┐");
-            List<Personaje> candidatosHumanoM1 = partida.obtenerCandidatos(maquina1, humano);
-            System.out.println("  M1 está analizando a " + candidatosHumanoM1.size() + " candidatos tuyos.");
+                System.out.println("\n┌── TURNO MÁQUINA 1 [D&C] ──────────────────────┐");
+                List<Personaje> candidatosHumanoM1 = partida.obtenerCandidatos(maquina1, humano);
+                System.out.println("  M1 está analizando a " + candidatosHumanoM1.size() + " candidatos tuyos.");
 
-            DecisionMaquina decisionM1 = maquina1.decidir(candidatosHumanoM1, histHumanoM1, humano);
-            System.out.println("  Motivo: " + decisionM1.getMotivo());
-            if (decisionM1.isRealizarSuposicion()) {
-                System.out.println("  Suposición: " + decisionM1.getPersonajeObjetivo().getNombre());
-                if (partida.intentarSuposicion(maquina1, humano, decisionM1.getPersonajeObjetivo())) {
-                    System.out.println("  ✗ ¡Máquina 1 adivinó correctamente!");
-                    System.out.println("  → Tu personaje era: " + partida.getSecreto(humano).getNombre());
-                    System.out.println("  Perdiste.");
-                    return false;
+                DecisionMaquina decisionM1 = maquina1.decidir(candidatosHumanoM1, histHumanoM1, humano);
+                System.out.println("  Motivo: " + decisionM1.getMotivo());
+                if (decisionM1.isRealizarSuposicion()) {
+                    System.out.println("  Suposición: " + decisionM1.getPersonajeObjetivo().getNombre());
+                    if (partida.intentarSuposicion(maquina1, humano, decisionM1.getPersonajeObjetivo())) {
+                        System.out.println("  ✗ ¡Máquina 1 adivinó correctamente!");
+                        System.out.println("  → Tu personaje era: " + partida.getSecreto(humano).getNombre());
+                        System.out.println("  Perdiste.");
+                        return false;
+                    }
+                    System.out.println("  ✗ Suposición incorrecta.");
+                    List<Personaje> restantesM1 = partida.obtenerCandidatos(maquina1, humano);
+                    if (restantesM1.size() == 1) {
+                        System.out.println("  → Tu personaje secreto es: " + restantesM1.get(0).getNombre());
+                    }
+                } else {
+                    System.out.println("  Pregunta: " + decisionM1.getPregunta());
+                    Respuesta r = partida.responderPregunta(maquina1, humano, decisionM1.getPregunta());
+                    System.out.println("  Respuesta: " + (r.isAfirmativa() ? "Sí" : "No")
+                            + " | Candidatos: " + r.getCandidatosAntes() + " → " + r.getCandidatosDespues());
                 }
-                System.out.println("  ✗ Suposición incorrecta.");
-                List<Personaje> restantesM1 = partida.obtenerCandidatos(maquina1, humano);
-                if (restantesM1.size() == 1) {
-                    System.out.println("  → Tu personaje secreto es: " + restantesM1.get(0).getNombre());
-                }
-            } else {
-                System.out.println("  Pregunta: " + decisionM1.getPregunta());
-                Respuesta r = partida.responderPregunta(maquina1, humano, decisionM1.getPregunta());
-                System.out.println("  Respuesta: " + (r.isAfirmativa() ? "Sí" : "No")
-                        + " | Candidatos: " + r.getCandidatosAntes() + " → " + r.getCandidatosDespues());
+                System.out.println("└───────────────────────────────────────────────┘");
             }
-            System.out.println("└───────────────────────────────────────────────┘");
 
             if (partida.estaTerminada()) break;
 
-            List<Partida.RegistroPublico> histHumanoM2 = new ArrayList<>();
-            for (Partida.RegistroPublico reg : partida.getHistorialPublico()) {
-                if (reg.getEmisor().equals(maquina2.getNombre()) && reg.getReceptor().equals(humano.getNombre())) {
-                    histHumanoM2.add(reg);
+            if (!m2Adivinada) {
+                List<Partida.RegistroPublico> histHumanoM2 = new ArrayList<>();
+                for (Partida.RegistroPublico reg : partida.getHistorialPublico()) {
+                    if (reg.getEmisor().equals(maquina2.getNombre()) && reg.getReceptor().equals(humano.getNombre())) {
+                        histHumanoM2.add(reg);
+                    }
                 }
-            }
 
-            System.out.println("\n┌── TURNO MÁQUINA 2 [Greedy] ───────────────────┐");
-            List<Personaje> candidatosHumanoM2 = partida.obtenerCandidatos(maquina2, humano);
-            System.out.println("  M2 está analizando a " + candidatosHumanoM2.size() + " candidatos tuyos.");
+                System.out.println("\n┌── TURNO MÁQUINA 2 [Greedy] ───────────────────┐");
+                List<Personaje> candidatosHumanoM2 = partida.obtenerCandidatos(maquina2, humano);
+                System.out.println("  M2 está analizando a " + candidatosHumanoM2.size() + " candidatos tuyos.");
 
-            DecisionMaquina decisionM2 = maquina2.decidir(candidatosHumanoM2, histHumanoM2, humano);
-            System.out.println("  Motivo: " + decisionM2.getMotivo());
-            if (decisionM2.isRealizarSuposicion()) {
-                System.out.println("  Suposición: " + decisionM2.getPersonajeObjetivo().getNombre());
-                if (partida.intentarSuposicion(maquina2, humano, decisionM2.getPersonajeObjetivo())) {
-                    System.out.println("  ✗ ¡Máquina 2 adivinó correctamente!");
-                    System.out.println("  → Tu personaje era: " + partida.getSecreto(humano).getNombre());
-                    System.out.println("  Perdiste.");
-                    return false;
+                DecisionMaquina decisionM2 = maquina2.decidir(candidatosHumanoM2, histHumanoM2, humano);
+                System.out.println("  Motivo: " + decisionM2.getMotivo());
+                if (decisionM2.isRealizarSuposicion()) {
+                    System.out.println("  Suposición: " + decisionM2.getPersonajeObjetivo().getNombre());
+                    if (partida.intentarSuposicion(maquina2, humano, decisionM2.getPersonajeObjetivo())) {
+                        System.out.println("  ✗ ¡Máquina 2 adivinó correctamente!");
+                        System.out.println("  → Tu personaje era: " + partida.getSecreto(humano).getNombre());
+                        System.out.println("  Perdiste.");
+                        return false;
+                    }
+                    System.out.println("  ✗ Suposición incorrecta.");
+                    List<Personaje> restantesM2 = partida.obtenerCandidatos(maquina2, humano);
+                    if (restantesM2.size() == 1) {
+                        System.out.println("  → Tu personaje secreto es: " + restantesM2.get(0).getNombre());
+                    }
+                } else {
+                    System.out.println("  Pregunta: " + decisionM2.getPregunta());
+                    Respuesta r = partida.responderPregunta(maquina2, humano, decisionM2.getPregunta());
+                    System.out.println("  Respuesta: " + (r.isAfirmativa() ? "Sí" : "No")
+                            + " | Candidatos: " + r.getCandidatosAntes() + " → " + r.getCandidatosDespues());
                 }
-                System.out.println("  ✗ Suposición incorrecta.");
-                List<Personaje> restantesM2 = partida.obtenerCandidatos(maquina2, humano);
-                if (restantesM2.size() == 1) {
-                    System.out.println("  → Tu personaje secreto es: " + restantesM2.get(0).getNombre());
-                }
-            } else {
-                System.out.println("  Pregunta: " + decisionM2.getPregunta());
-                Respuesta r = partida.responderPregunta(maquina2, humano, decisionM2.getPregunta());
-                System.out.println("  Respuesta: " + (r.isAfirmativa() ? "Sí" : "No")
-                        + " | Candidatos: " + r.getCandidatosAntes() + " → " + r.getCandidatosDespues());
+                System.out.println("└───────────────────────────────────────────────┘");
             }
-            System.out.println("└───────────────────────────────────────────────┘");
         }
 
         return false;

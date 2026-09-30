@@ -79,8 +79,19 @@ public class InterfazConsola {
             return;
         }
         String nombre = scanner.nextLine();
+        
+        // Mostrar sub-menú de modos de juego
+        System.out.println("\n╔════════════════════════════════════════╗");
+        System.out.println("  SELECCIONA EL MODO DE JUEGO");
+        System.out.println("╚════════════════════════════════════════╝");
+        System.out.println("1. Humano vs Duo (adivina 1 de 2)");
+        System.out.println("2. Cualquier Rival (adivina 2 de 2)");
+        int modoOpcion = leerEntero("Opción");
+        
+        String modo = (modoOpcion == 2) ? "CUALQUIER_RIVAL" : "HUMANO_VS_DUO";
+        
         MotorPartida motor = new MotorPartida(CatalogoPersonajes.crearListaBase());
-        boolean ganoHumano = motor.jugarHumanoVsMaquinas(scanner, nombre);
+        boolean ganoHumano = motor.jugarHumanoVsMaquinas(scanner, nombre, modo);
         if (ganoHumano) {
             servicioMarcador.registrarVictoria(nombre);
             System.out.println("Victoria registrada en el marcador.");
