@@ -233,6 +233,10 @@ public class MotorPartida {
                             return true;
                         }
                         System.out.println("Incorrecto. " + supuesto.getNombre() + " queda descartado para M1.");
+                        List<Personaje> restantesM1 = partida.obtenerCandidatos(humano, maquina1);
+                        if (restantesM1.size() == 1) {
+                            System.out.println("→ El personaje secreto de M1 era: " + restantesM1.get(0).getNombre());
+                        }
                         turnoHumanoTerminado = true;
                         break;
                     }
@@ -244,6 +248,10 @@ public class MotorPartida {
                             return true;
                         }
                         System.out.println("Incorrecto. " + supuesto.getNombre() + " queda descartado para M2.");
+                        List<Personaje> restantesM2 = partida.obtenerCandidatos(humano, maquina2);
+                        if (restantesM2.size() == 1) {
+                            System.out.println("→ El personaje secreto de M2 era: " + restantesM2.get(0).getNombre());
+                        }
                         turnoHumanoTerminado = true;
                         break;
                     }

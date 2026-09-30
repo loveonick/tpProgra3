@@ -34,7 +34,11 @@ public class EstrategiaDivideYConquista implements EstrategiaMaquina {
                     new ArrayList<>(), candidatos.size());
         }
 
-        String motivo = "Divide y conquista: el conjunto se divide en mitades, se resuelve cada subproblema recursivamente y luego se combina la mejor decisión del conjunto. La pregunta elegida es la mejor entre la solución local y las soluciones de los subproblemas.";
+        String motivo = "Divide y conquista:\n" +
+                "  • El conjunto se divide en mitades\n" +
+                "  • Se resuelve cada subproblema recursivamente\n" +
+                "  • Se combina la mejor decisión del conjunto\n" +
+                "  • Pregunta elegida es la mejor entre la solución local y las soluciones de los subproblemas.";
         return new DecisionMaquina(false, mejor.getPregunta(), null, motivo, obtenerAlternativas(candidatos, historialPublico), candidatos.size());
     }
 

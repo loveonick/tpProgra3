@@ -54,8 +54,11 @@ public class EstrategiaGreedy implements EstrategiaMaquina {
 
         alternativas.sort((a, b) -> Double.compare(b.getScore(), a.getScore()));
         AnalisisPregunta seleccionada = alternativas.get(0);
-        String motivo = "Greedy: evaluación local del beneficio inmediato. La pregunta seleccionada presenta la partición más equilibrada (Sí=" +
-                seleccionada.getSi() + ", No=" + seleccionada.getNo() + ") porque minimiza el peor caso y maximiza la reducción inmediata del conjunto.";
+        String motivo = "Greedy (Evaluación Local):\n" +
+                "  • Evalúa todas las preguntas disponibles\n" +
+                "  • Selecciona la que presenta la partición más equilibrada (Sí=" +
+                seleccionada.getSi() + ", No=" + seleccionada.getNo() + ")\n" +
+                "  • Minimiza el peor caso y maximiza la reducción inmediata del conjunto";
 
         return new DecisionMaquina(false, seleccionada.getPregunta(), null, motivo, alternativas, candidatos.size());
     }
