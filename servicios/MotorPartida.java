@@ -459,11 +459,17 @@ public class MotorPartida {
 
     private static int leerEntero(Scanner scanner, String mensaje) {
         System.out.print(mensaje + ": ");
-        while (!scanner.hasNextInt()) {
-            System.out.println("Entrada inválida. Debe ser un número entero.");
-            scanner.next();
-            System.out.print(mensaje + ": ");
+        while (true) {
+            if (!scanner.hasNextLine()) {
+                return -1;
+            }
+            String entrada = scanner.nextLine().trim();
+            try {
+                return Integer.parseInt(entrada);
+            } catch (NumberFormatException e) {
+                System.out.println("Entrada inválida. Debe ser un número entero.");
+                System.out.print(mensaje + ": ");
+            }
         }
-        return scanner.nextInt();
     }
 }
